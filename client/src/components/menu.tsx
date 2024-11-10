@@ -9,6 +9,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { tools } from "@/app/data/menu";
+import { useModuleContext } from "@/context/module-context";
 
 interface MenuProps {
   selectedProvider: string;
@@ -74,36 +75,40 @@ export function Menu({ selectedProvider, setSelectedProvider, deleteNode, clearN
               </CollapsibleContent>
             </Collapsible>
           ))} */}
-          {
-            tools.map((tool: any) => (
-              <div
-                key={tool.name}
-                draggable
-                onDragStart={(e) => handleDragStart(e, tool)}
-                className={`flex items-center justify-between rounded-md px-2 py-2 hover:bg-muted cursor-grab active:cursor-grabbing transition-all ${isDragging === tool.name ? "pl-6" : ""}`}
-                onDragEnd={() => setIsDragging(null)}
-              >
-                {tool.name}
-                <HoverCard>
-                  <HoverCardTrigger asChild>
-                    <Info className="h-4 w-4 cursor-pointer" />
-                  </HoverCardTrigger>
-                  <HoverCardContent side="right" className="w-80 bg-background/80 backdrop-blur-sm border-none shadow-lg">
-                    <div className="space-y-2">
-                      <h4 className="font-medium">{tool.name}</h4>
-                      <ReactMarkdown className="prose text-sm text-muted-foreground" children={tool.info} />
-                    </div>
-                  </HoverCardContent>
-                </HoverCard>
-              </div>
-            ))
-          }
+          {tools.map((tool: any) => (
+            <div
+              key={tool.name}
+              draggable
+              onDragStart={(e) => handleDragStart(e, tool)}
+              className={`flex items-center justify-between rounded-md px-2 py-2 hover:bg-muted cursor-grab active:cursor-grabbing transition-all ${
+                isDragging === tool.name ? "pl-6" : ""
+              }`}
+              onDragEnd={() => setIsDragging(null)}
+            >
+              {tool.name}
+              <HoverCard>
+                <HoverCardTrigger asChild>
+                  <Info className="h-4 w-4 cursor-pointer" />
+                </HoverCardTrigger>
+                <HoverCardContent side="right" className="w-80 bg-background/80 backdrop-blur-sm border-none shadow-lg">
+                  <div className="space-y-2">
+                    <h4 className="font-medium">{tool.name}</h4>
+                    <ReactMarkdown className="prose text-sm text-muted-foreground" children={tool.info} />
+                  </div>
+                </HoverCardContent>
+              </HoverCard>
+            </div>
+          ))}
         </div>
       </ScrollArea>
 
       <div className="sticky bottom-10 flex gap-2">
-        <Button onClick={clearNode} className="flex-1 bg-sky-600 hover:bg-sky-700 font-semibold text-white">Clear</Button>
-        <Button onClick={deleteNode} className="flex-1 bg-sky-600 hover:bg-sky-700 font-semibold text-whit">Delete</Button>
+        <Button onClick={clearNode} className="flex-1 bg-sky-600 hover:bg-sky-700 font-semibold">
+          Clear
+        </Button>
+        <Button onClick={deleteNode} className="flex-1 bg-sky-600 hover:bg-sky-700 font-semibold">
+          Delete
+        </Button>
       </div>
     </aside>
   );

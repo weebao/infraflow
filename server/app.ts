@@ -127,7 +127,9 @@ app.post('/generate-files', async (req: Request, res: Response) => {
             console.log('No modules provided');
         }
 
-        res.json({ message: 'File generation completed successfully' });
+        const generatedFilePath = path.join(watchDir, 'generatedFile.tf');
+        const fileContent = fs.readFileSync(generatedFilePath, 'utf8');
+        res.json({ message: 'File generation completed successfully', config: fileContent });
     } catch (error) {
         console.error('An unexpected error occurred:', error);
         res.status(500).json({ error: 'An unexpected error occurred' });

@@ -1,33 +1,54 @@
+import React, { useState, useEffect } from "react";
+
 import { Copy, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BorderBeam } from "@stianlarsen/border-beam";
+import { useProvider } from "@/context/provider-context";
+import { useModuleContext } from "@/context/module-context";
 
-interface ConfigPanelProps {
-  terraformConfig: string;
-}
+export function ConfigPanel() {
+  const { provider } = useProvider();
+  const { modules } = useModuleContext();
+  const [tfCode, setTfCode] = useState<string>("");
 
-export function ConfigPanel({ terraformConfig }: ConfigPanelProps) {
+  useEffect(() => {
+    const fetchCode = async () => {
+      if (provider && modules.length > 0) {
+        console.log("fetching", provider, modules);
+        const code = await fetch("http://localhost:8000/generate-files", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            provider,
+            modules,
+          }),
+        }).then((res) => res.text());
+        setTfCode(code);
+      }
+    };
+    fetchCode();
+  }, [provider, modules])
+
   const handleCopy = () => {
-    navigator.clipboard.writeText(terraformConfig);
+    navigator.clipboard.writeText(tfCode);
   };
 
   return (
-    <Card className="bg-card/10 backdrop-filter backdrop-blur-sm relative self-start">
+    <Card className="bg-card/75 backdrop-filter backdrop-blur-sm relative self-start">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Generated Terraform Config</CardTitle>
-        <Button size="icon">
-          <Play className="h-4 w-4" />
-        </Button>
       </CardHeader>
       <CardContent>
-        {terraformConfig ? (
+        {tfCode ? (
           <pre className="bg-muted p-4 rounded-lg overflow-auto text-sm max-h-[calc(100vh-200px)]">
-            <code>{terraformConfig}</code>
+            <code>{tfCode}</code>
           </pre>
         ) : null}
       </CardContent>
-      <BorderBeam size={200} duration={5} colorFrom="#7b42bc" colorTo="#a067da" />
+      <BorderBeam size={100} duration={5} colorFrom="#7b42bc" colorTo="#a067da" />
     </Card>
   );
 }

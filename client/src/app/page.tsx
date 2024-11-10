@@ -29,6 +29,7 @@ import { ConfigPanel } from "@/components/config-panel";
 import { nanoid } from "nanoid";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useProvider } from "@/context/provider-context";
+import { useModuleContext } from "@/context/module-context";
 import InfoPanel from "@/components/info-panel";
 
 const defaultEdges = [
@@ -62,9 +63,31 @@ const Home: React.FC = () => {
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [infoOpen, setInfoOpen] = useState<boolean>(false);
 
-  const { screenToFlowPosition } = useReactFlow();
+  const { getNode, screenToFlowPosition } = useReactFlow();
+  const { modules, setModules } = useModuleContext();
 
-  const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge({ ...params, type: "animatedSvgEdge", animated: true }, eds)), []);
+  const onConnect = useCallback((params: Connection) => {
+    setEdges((eds) => addEdge({ ...params, type: "animatedSvgEdge", animated: true }, eds));
+    const { source, target } = params;
+    const sourceNode = getNode(source);
+    const targetNode = getNode(target);
+    setModules((prevModules: any) => {
+      if (sourceNode?.type === "ServiceNode" && targetNode?.type === "ServiceNode") {
+        return [
+          ...prevModules,
+          {
+            name: typeof sourceNode?.data?.name === 'string' ? sourceNode.data.name.replace(/\s+/g, '') : '',
+            args: []
+          },
+          {///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            name: typeof targetNode?.data?.name === 'string' ? targetNode.data.name.replace(/\s+/g, '') : "",
+            args: []
+          }
+        ];
+      }
+      return prevModules;
+    });
+  }, []);
 
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
@@ -76,7 +99,8 @@ const Home: React.FC = () => {
       event.preventDefault();
       const name = event.dataTransfer.getData("name");
       const info = event.dataTransfer.getData("info");
-      const children: any = JSON.parse(event.dataTransfer.getData("children"));
+      const children = event.dataTransfer.getData("children")
+      const childrenData: any = JSON.parse(children ?? '[]');
 
       const position = screenToFlowPosition({
         x: event.clientX,
@@ -93,7 +117,7 @@ const Home: React.FC = () => {
           toggleInfoPanel,
           setNodes,
           setEdges,
-          children
+          children: childrenData,
         },
       };
 
@@ -120,6 +144,7 @@ const Home: React.FC = () => {
       setNodes((nds) => nds.filter((node) => node.id !== selectedNode.id && node.parentId !== selectedNode.id));
       setEdges((eds) => eds.filter((edge) => edge.source !== selectedNode.id && edge.target !== selectedNode.id));
       // setSelectedNode(null);
+      setModules((mod) => mod.filter((module) => module.name !== selectedNode.data.name));
     }
   };
 
@@ -127,6 +152,7 @@ const Home: React.FC = () => {
     setNodes([]);
     setEdges([]);
     setSelectedNode(null);
+    setModules([]);
   };
 
   return (
@@ -152,7 +178,7 @@ const Home: React.FC = () => {
         </ReactFlow>
       </div>
       <div className="fixed top-0 right-0 m-4">
-        <ConfigPanel terraformConfig="" />
+        <ConfigPanel />
         <InfoPanel infoOpen={infoOpen} selectedNode={selectedNode} setInfoOpen={setInfoOpen} />
       </div>
     </div>
