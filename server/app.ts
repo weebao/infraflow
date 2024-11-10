@@ -142,6 +142,7 @@ app.post('/generate-files', async (req: Request, res: Response) => {
 
 
 const outputDir = path.resolve(__dirname, 'output');
+const inputDir = path.resolve(__dirname, 'watch');
 
 app.get('/output/files', (_req: Request, res: Response) => {
     fs.readdir(outputDir, (err, files) => {
@@ -169,6 +170,73 @@ app.get('/output/:fileName', (req: Request, res: Response) => {
     res.sendFile(filePath);
 });
 
+app.delete('/output/:fileName', (req: Request, res: Response) => {
+    const fileName = req.params.fileName;
+
+    // Read all files in the output directory
+    fs.readdir(inputDir, (err, files) => {
+        if (err) {
+            console.error('Error reading directory:', err);
+            return res.status(500).json({ error: 'Error reading directory' });
+        }
+
+        // Filter files that contain the fileName substring
+        const filesToDelete = files.filter(file => file.includes(fileName));
+
+        // If no files match, respond with a 404 error
+        if (filesToDelete.length === 0) {
+            return res.status(404).json({ error: 'No files found matching the given name' });
+        }
+
+        // Delete each matching file
+        let deleteErrors = [];
+        filesToDelete.forEach(file => {
+            const filePath = path.join(inputDir, file);
+            fs.unlink(filePath, err => {
+                if (err) {
+                    console.error('Error deleting file:', file, err);
+                    deleteErrors.push(file);
+                }
+            });
+        });
+
+        // After attempting to delete, respond based on results
+        if (deleteErrors.length === 0) {
+            res.json({ message: `All files containing "${fileName}" were deleted successfully` });
+        } else {
+            res.status(500).json({ error: `Error deleting some files: ${deleteErrors.join(', ')}` });
+        }
+    });
+});
+
+app.delete('/output', (_req: Request, res: Response) => {
+    // Read all files in the output directory
+    fs.readdir(inputDir, (err, files) => {
+        if (err) {
+            console.error('Error reading directory:', err);
+            return res.status(500).json({ error: 'Error reading directory' });
+        }
+
+        // Delete each file
+        let deleteErrors = [];
+        files.forEach(file => {
+            const filePath = path.join(inputDir, file);
+            fs.unlink(filePath, err => {
+                if (err) {
+                    console.error('Error deleting file:', file, err);
+                    deleteErrors.push(file);
+                }
+            });
+        });
+
+        // After attempting to delete, respond based on results
+        if (deleteErrors.length === 0) {
+            res.json({ message: 'All files were deleted successfully' });
+        } else {
+            res.status(500).json({ error: `Error deleting some files: ${deleteErrors.join(', ')}` });
+        }
+    });
+}
 // Helper function to determine MIME type based on file extension
 function getMimeType(fileName: string): string {
     const ext = path.extname(fileName).toLowerCase();
