@@ -58,7 +58,7 @@ const InfoPanel: React.FC<InfoPanelProps> = ({ infoOpen, selectedNode, setInfoOp
 
   return (
     <Card
-      className={`bg-card/75 backdrop-filter backdrop-blur-sm relative mt-2 w-[350px] transition-transform duration-300 ${
+      className={`fixed top-0 right-0 m-4 bg-card/90 backdrop-filter backdrop-blur-sm mt-2 w-[350px] transition-transform duration-300 ${
         infoOpen ? "translate-x-0" : "translate-x-[200%]"
       }`}
     >

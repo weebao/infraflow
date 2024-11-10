@@ -79,7 +79,7 @@ const Home: React.FC = () => {
             name: typeof sourceNode?.data?.name === 'string' ? sourceNode.data.name.replace(/\s+/g, '') : '',
             args: []
           },
-          {///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+          {
             name: typeof targetNode?.data?.name === 'string' ? targetNode.data.name.replace(/\s+/g, '') : "",
             args: []
           }
@@ -177,10 +177,8 @@ const Home: React.FC = () => {
           <Background />
         </ReactFlow>
       </div>
-      <div className="fixed top-0 right-0 m-4">
-        <ConfigPanel />
-        <InfoPanel infoOpen={infoOpen} selectedNode={selectedNode} setInfoOpen={setInfoOpen} />
-      </div>
+      <ConfigPanel />
+      <InfoPanel infoOpen={infoOpen} selectedNode={selectedNode} setInfoOpen={setInfoOpen} />
     </div>
   );
 };
