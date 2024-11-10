@@ -155,7 +155,7 @@ import { InfoIcon } from "lucide-react";
 import { SiAwslambda , SiAmazonrds, SiAmazonec2, SiAmazoniam, SiAmazons3, SiAmazonroute53, SiAmazoncloudwatch , SiAmazondynamodb } from "react-icons/si";
 
 // Map each service name to the corresponding icon component
-const serviceIcons: Record<string, React.ComponentType> = {
+const serviceIcons: Record<string, React.ComponentType<{ className?: string }>> = {
   EC2: SiAmazonec2,
   Lambda: SiAwslambda,
   S3: SiAmazons3,
@@ -171,18 +171,21 @@ type ServiceNodeData = Node<{
   info: string;
   isSuggestion: boolean;
   toggleInfoPanel: () => void;
+  args: any;
 }>;
 
 export function ServiceNode({ id, data, selected, parentId }: NodeProps<ServiceNodeData>) {
   // Select the appropriate icon based on data.name
-  const IconComponent = serviceIcons[data.name] || SiAmazonaws; // Default to AWS logo if service is not found
+  const IconComponent = serviceIcons[data.name] || SiAmazonec2
 
   return (
     <BaseNode id={id} selected={selected}>
       <>
         {/* Display the service icon if it exists */}
-        {IconComponent && <IconComponent className="w-6 h-6 mr-2" />}
-        {data.name}
+        <div className="flex items-center">
+          {IconComponent && <IconComponent className="w-6 h-6 mr-2" />}
+          {data.name}
+        </div>
         <InfoIcon className="absolute w-3 h-3 top-2 right-2 hover:text-sky-500 cursor-pointer" onClick={data.toggleInfoPanel} />
         <Handle type="source" position={Position.Right} />
         <Handle type="target" position={Position.Left} />

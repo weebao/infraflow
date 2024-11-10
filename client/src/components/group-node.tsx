@@ -42,6 +42,7 @@ export function GroupNode({ id, data, selected }: NodeProps<GroupNodeData>) {
         name: child.name,
         info: child.info,
         toggleInfoPanel: data.toggleInfoPanel,
+        args: child.args,
       },
       parentId: id,
     }));

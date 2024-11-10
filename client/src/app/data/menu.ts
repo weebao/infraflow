@@ -93,6 +93,29 @@ For example, you can use S3 to:
   - Create data lakes for analytics
   - Archive important documents
         `,
+        type: "string",
+        args: [
+          {
+            name: "Bucket name",
+            type: "string",
+            key: "--bucket-name",
+          },
+          {
+            name: "Enable versioning?",
+            type: "boolean",
+            key: "--versioning",
+          },
+          {
+            name: "Set ACL",
+            type: "string",
+            key: "--acl",
+          },
+          {
+            name: "Include lifecycle policy?",
+            type: "boolean",
+            key: "--lifecycle",
+          },
+        ],
       },
       {
         name: "DynamoDB",

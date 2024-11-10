@@ -9,12 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-checkbox": "^1.1.2",
     "@radix-ui/react-collapsible": "^1.1.1",
     "@radix-ui/react-hover-card": "^1.1.2",
+    "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-scroll-area": "^1.2.0",
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.0",
     "@stianlarsen/border-beam": "^1.0.9",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "@xyflow/react": "^12.3.4",
     "aws-lambda": "^1.0.7",
     "azure-react-icons": "^0.10.1",
