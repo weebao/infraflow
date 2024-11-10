@@ -236,8 +236,9 @@ app.delete('/output', (_req: Request, res: Response) => {
             res.status(500).json({ error: `Error deleting some files: ${deleteErrors.join(', ')}` });
         }
     });
-}
-// Helper function to determine MIME type based on file extension
+});
+
+// Helper function to detWermine MIME type based on file extension
 function getMimeType(fileName: string): string {
     const ext = path.extname(fileName).toLowerCase();
     switch (ext) {
