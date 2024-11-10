@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+
 import { Search, ChevronDown, Info } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { Input } from "@/components/ui/input";
@@ -6,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { services, tools } from "@/app/data/menu";
+import { tools } from "@/app/data/menu";
 
 interface MenuProps {
   selectedProvider: string;
@@ -16,11 +18,13 @@ interface MenuProps {
 }
 
 export function Menu({ selectedProvider, setSelectedProvider, deleteNode, clearNode }: MenuProps) {
+  const [isDragging, setIsDragging] = useState<string | null>(null);
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>, service: any) => {
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("name", service.name);
     event.dataTransfer.setData("info", service.info);
     event.dataTransfer.setData("children", JSON.stringify(service.children));
+    setIsDragging(service.name);
   };
 
   return (
@@ -76,7 +80,8 @@ export function Menu({ selectedProvider, setSelectedProvider, deleteNode, clearN
                 key={tool.name}
                 draggable
                 onDragStart={(e) => handleDragStart(e, tool)}
-                className="flex items-center justify-between rounded-md px-2 py-2 hover:bg-muted cursor-move"
+                className={`flex items-center justify-between rounded-md px-2 py-2 hover:bg-muted cursor-grab active:cursor-grabbing transition-all ${isDragging === tool.name ? "pl-4" : ""}`}
+                onDragEnd={() => setIsDragging(null)}
               >
                 {tool.name}
                 <HoverCard>
@@ -97,8 +102,8 @@ export function Menu({ selectedProvider, setSelectedProvider, deleteNode, clearN
       </ScrollArea>
 
       <div className="sticky bottom-10 flex gap-2">
-        <Button onClick={clearNode} className="flex-1 bg-sky-500 hover:bg-sky-700 font-semibold text-white">Clear</Button>
-        <Button onClick={deleteNode} className="flex-1 bg-sky-500 hover:bg-sky-700 font-semibold text-whit">Delete</Button>
+        <Button onClick={clearNode} className="flex-1 bg-sky-600 hover:bg-sky-700 font-semibold text-white">Clear</Button>
+        <Button onClick={deleteNode} className="flex-1 bg-sky-600 hover:bg-sky-700 font-semibold text-whit">Delete</Button>
       </div>
     </aside>
   );

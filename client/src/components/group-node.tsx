@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 import { useReactFlow, Handle, Position, NodeProps, Node, Edge } from "@xyflow/react";
 import { useProvider } from "@/context/provider-context";
 import { BaseNode } from "@/components/base-node";
-import { InfoIcon, PanelTopOpenIcon } from "lucide-react";
+import { InfoIcon, PanelTopOpenIcon, PanelTopCloseIcon } from "lucide-react";
 
 type GroupNodeData = Node<{
   name: string;
@@ -25,7 +25,7 @@ export function GroupNode({ id, data, selected }: NodeProps<GroupNodeData>) {
 
   const removeChildren = () => {
     data.setNodes((nds) => nds.filter((nd) => nd.parentId !== id));
-  }
+  };
 
   const addChildren = (provider: string) => {
     // Clear all children nodes and edges
@@ -36,7 +36,7 @@ export function GroupNode({ id, data, selected }: NodeProps<GroupNodeData>) {
       type: "ServiceNode",
       position: {
         x: 20,
-        y: 80 * (index) + 60,
+        y: 80 * index + 60,
       },
       data: {
         name: child.name,
@@ -61,7 +61,7 @@ export function GroupNode({ id, data, selected }: NodeProps<GroupNodeData>) {
 
   useEffect(() => {
     if (show) {
-      addChildren(provider)
+      addChildren(provider);
     }
   }, [provider]);
 
@@ -69,6 +69,7 @@ export function GroupNode({ id, data, selected }: NodeProps<GroupNodeData>) {
     <BaseNode
       id={id}
       selected={selected}
+      className={show ? "bg-transparent" : ""}
       style={{
         height,
         minWidth: 300,
@@ -77,7 +78,11 @@ export function GroupNode({ id, data, selected }: NodeProps<GroupNodeData>) {
       <>
         {data.name}
         <div className="absolute top-3 right-3 flex items-center gap-2">
-          <PanelTopOpenIcon className="w-4 h-4 hover:text-sky-500 cursor-pointer" onClick={toggleShow} />
+          {show ? (
+            <PanelTopCloseIcon className="w-4 h-4 hover:text-sky-500 cursor-pointer" onClick={toggleShow} />
+          ) : (
+            <PanelTopOpenIcon className="w-4 h-4 hover:text-sky-500 cursor-pointer" onClick={toggleShow} />
+          )}
           <InfoIcon className="w-4 h-4 hover:text-sky-500 cursor-pointer" onClick={data.toggleInfoPanel} />
         </div>
         <Handle type="source" position={Position.Right} />

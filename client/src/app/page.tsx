@@ -97,6 +97,7 @@ const Home: React.FC = () => {
       };
 
       setNodes((nds) => nds.concat(newNode));
+      selectNode(event, newNode);
     },
     [screenToFlowPosition]
   );
@@ -110,7 +111,6 @@ const Home: React.FC = () => {
   };
 
   const selectNode = (e: React.MouseEvent, node: Node) => {
-    console.log(node)
     setSelectedNode(node);
   };
 
