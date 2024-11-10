@@ -12,9 +12,12 @@ type ServiceNodeData = Node<{
   toggleInfoPanel: () => void;
 }>;
 
-export function ServiceNode({ id, data, selected }: NodeProps<ServiceNodeData>) {
+export function ServiceNode({ id, data, selected, parentId }: NodeProps<ServiceNodeData>) {
   return (
-    <BaseNode id={id} selected={selected}>
+    <BaseNode
+      id={id}
+      selected={selected}
+    >
       <>
         {data.name}
         <InfoIcon className="absolute w-3 h-3 top-2 right-2 hover:text-sky-500 cursor-pointer" onClick={data.toggleInfoPanel} />

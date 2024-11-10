@@ -1,11 +1,12 @@
 import { Search, ChevronDown, Info } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { services } from "@/app/data/menu";
+import { services, tools } from "@/app/data/menu";
 
 interface MenuProps {
   selectedProvider: string;
@@ -19,11 +20,12 @@ export function Menu({ selectedProvider, setSelectedProvider, deleteNode, clearN
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("name", service.name);
     event.dataTransfer.setData("info", service.info);
+    event.dataTransfer.setData("children", JSON.stringify(service.children));
   };
 
   return (
     <aside className="w-64 h-full border-r bg-background p-4 flex flex-col gap-4">
-      <Input type="search" placeholder="Search services..." className="w-full" />
+      {/* <Input type="search" placeholder="Search services..." className="w-full" /> */}
       <Select value={selectedProvider} onValueChange={setSelectedProvider}>
         <SelectTrigger>
           <SelectValue placeholder="Select provider" />
@@ -36,8 +38,8 @@ export function Menu({ selectedProvider, setSelectedProvider, deleteNode, clearN
       </Select>
 
       <ScrollArea className="flex-1">
-        <div className="space-y-4">
-          {services[selectedProvider]?.map((serviceCategory: any) => (
+        <div className="space-y-2">
+          {/* {services[selectedProvider]?.map((serviceCategory: any) => (
             <Collapsible key={serviceCategory.category}>
               <CollapsibleTrigger className="flex w-full items-center justify-between py-2 font-medium">
                 {serviceCategory.category}
@@ -67,7 +69,30 @@ export function Menu({ selectedProvider, setSelectedProvider, deleteNode, clearN
                 ))}
               </CollapsibleContent>
             </Collapsible>
-          ))}
+          ))} */}
+          {
+            tools.map((tool: any) => (
+              <div
+                key={tool.name}
+                draggable
+                onDragStart={(e) => handleDragStart(e, tool)}
+                className="flex items-center justify-between rounded-md px-2 py-2 hover:bg-muted cursor-move"
+              >
+                {tool.name}
+                <HoverCard>
+                  <HoverCardTrigger asChild>
+                    <Info className="h-4 w-4 cursor-pointer" />
+                  </HoverCardTrigger>
+                  <HoverCardContent side="right" className="w-80 bg-background/80 backdrop-blur-sm border-none shadow-lg">
+                    <div className="space-y-2">
+                      <h4 className="font-medium">{tool.name}</h4>
+                      <ReactMarkdown className="prose text-sm text-muted-foreground" children={tool.info} />
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+            ))
+          }
         </div>
       </ScrollArea>
 

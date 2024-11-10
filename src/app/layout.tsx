@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ReactFlowProvider } from "@xyflow/react";
 import "./globals.css";
 import '@xyflow/react/dist/style.css';
+import { ProviderProvider } from "@/context/provider-context";
 
 export const metadata: Metadata = {
   title: "Infraflow",
@@ -17,7 +18,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="h-screen">
         <ReactFlowProvider>
-          {children}
+          <ProviderProvider>
+            {children}
+          </ProviderProvider>
         </ReactFlowProvider>
       </body>
     </html>

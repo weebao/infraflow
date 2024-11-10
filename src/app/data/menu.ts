@@ -293,4 +293,158 @@ For example, you can use Compute Engine to:
       ],
     },
   },
-];
+  {
+    name: "Database",
+    info: `
+A database is an organized collection of data, typically stored and accessed electronically from a computer system. It is used to store, manage, and retrieve data efficiently. There are different types of databases, such as relational, NoSQL, and in-memory databases. Each type has its own strengths and use cases. For example, you can use a database to:
+- Store customer information
+- Manage inventory
+- Analyze business data
+    `,
+    children: {
+      "aws": [
+        {
+          name: "S3",
+          info: `
+Simple Storage Service (S3) offers scalable object storage, allowing you to store and retrieve any amount of data at any time. It is ideal for backup, archiving, and big data analytics.
+
+For example, you can use S3 to:
+  - Store website assets
+  - Create data lakes for analytics
+  - Archive important documents
+        `,
+      },
+      {
+        name: "DynamoDB",
+        info: `
+  Managed NoSQL Database Service (DynamoDB) provides fast and predictable performance with seamless scalability. It is ideal for applications that require consistent, single-digit millisecond latency at any scale.
+
+  For instance, you can use DynamoDB to:
+  - Build a high-traffic web application
+  - Manage user profiles
+  - Store session data
+        `,
+      },
+      ],
+      "azure": [
+      {
+        name: "Blob Storage",
+        info: `
+  Scalable Object Storage (Blob Storage) is used for storing large amounts of unstructured data, such as text or binary data. It is ideal for serving images or documents directly to a browser.
+
+  For example, you can use Blob Storage to:
+  - Store backups
+  - Serve media files
+  - Archive data
+        `,
+      },
+      {
+        name: "CosmosDB",
+        info: `
+  Managed NoSQL Database Service (CosmosDB) provides a globally distributed, multi-model database service. It is ideal for building highly responsive and highly available applications.
+
+  For instance, you can use CosmosDB to:
+  - Create a globally distributed application
+  - Manage user data
+  - Store IoT data
+        `,
+      },
+      ],
+      "gcp": [
+      {
+        name: "Cloud Storage",
+        info: `
+  Scalable Object Storage (Cloud Storage) is used for storing and accessing data on Google's infrastructure. It is ideal for serving website content, storing data for archival and disaster recovery, or distributing large data objects to users.
+
+  For example, you can use Cloud Storage to:
+  - Store backups
+  - Serve media files
+  - Archive data
+        `,
+      },
+      {
+        name: "Firestore",
+        info: `
+  Managed NoSQL Database Service (Firestore) provides a flexible, scalable database for mobile, web, and server development. It is ideal for building real-time applications with offline support.
+
+  For instance, you can use Firestore to:
+  - Create a chat application
+  - Manage user data
+  - Store IoT data
+        `,
+      },
+      ],
+    },
+    },
+    {
+    name: "Security",
+    info: `
+  Security services are used to protect your applications and data from threats. They include tools for identity management, access control, and data encryption. For example, you can use security services to:
+  - Manage user access
+  - Encrypt sensitive data
+  - Monitor for security threats
+    `,
+    children: {
+      "aws": [
+      {
+        name: "Security Groups",
+        info: `
+  Virtual Firewall for Your Instances (Security Groups) is used to control inbound and outbound traffic to your instances. It is ideal for securing your instances and applications.
+
+  For example, you can define rules to:
+  - Allow or deny traffic based on IP addresses
+  - Control access based on ports and protocols
+        `,
+      },
+      ],
+      "azure": [
+      {
+        name: "Azure AD",
+        info: `
+  Identity and Access Management (Azure AD) is used to manage user identities and access to resources. It is ideal for securing access to applications and protecting user identities.
+
+  For example, you can use Azure AD to:
+  - Manage employee access to company resources
+  - Secure access to cloud applications
+  - Implement single sign-on (SSO)
+        `,
+      },
+      {
+        name: "Key Vault",
+        info: `
+  Key Management Service (Key Vault) is used to safeguard cryptographic keys and secrets. It is ideal for enhancing data protection and compliance requirements.
+
+  For instance, you can use Key Vault to:
+  - Store API keys
+  - Manage encryption keys
+  - Secure passwords
+        `,
+      },
+      ],
+      "gcp": [
+      {
+        name: "Identity Platform",
+        info: `
+  Identity and Access Management (Identity Platform) is used to add identity management and authentication to your applications. It is ideal for securing user access and managing user identities.
+
+  For example, you can use Identity Platform to:
+  - Implement user authentication
+  - Manage user roles
+  - Secure access to applications
+        `,
+      },
+      {
+        name: "Cloud KMS",
+        info: `
+  Key Management Service (Cloud KMS) is used to manage cryptographic keys for your cloud services. It is ideal for enhancing data security and compliance requirements.
+
+  For instance, you can use Cloud KMS to:
+  - Store API keys
+  - Manage encryption keys
+  - Secure passwords
+        `,
+      },
+      ],
+    },
+    },
+  ];

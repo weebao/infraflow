@@ -20,12 +20,15 @@ import {
 import { XIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
+import { BorderBeam } from "@stianlarsen/border-beam";
 import { Menu } from "@/components/menu";
+import { GroupNode } from "@/components/group-node";
 import { ServiceNode } from "@/components/service-node";
 import { AnimatedSvgEdge } from "@/components/animated-svg-edge";
 import { ConfigPanel } from "@/components/config-panel";
 import { nanoid } from "nanoid";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useProvider } from "@/context/provider-context";
 
 const defaultEdges = [
   {
@@ -46,14 +49,15 @@ const edgeTypes = {
 };
 
 const nodeTypes = {
+  GroupNode: GroupNode,
   ServiceNode: ServiceNode,
 };
 
 const Home: React.FC = () => {
-  const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
+  // const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
+  const { provider, setProvider } = useProvider();
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
-  const [selectedProvider, setSelectedProvider] = useState<string>("aws");
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [infoOpen, setInfoOpen] = useState<boolean>(false);
 
@@ -71,25 +75,24 @@ const Home: React.FC = () => {
       event.preventDefault();
       const name = event.dataTransfer.getData("name");
       const info = event.dataTransfer.getData("info");
+      const children: any = JSON.parse(event.dataTransfer.getData("children"));
 
       const position = screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
       });
+      const id = nanoid();
       const newNode = {
-        id: nanoid(),
-        type: "ServiceNode",
+        id,
+        type: "GroupNode",
         position,
         data: {
           name,
           info,
-          toggleInfoPanel: (id: string) => {
-            if (selectedNode?.id === id) {
-              setInfoOpen(!infoOpen);
-            } else {
-              setInfoOpen(true);
-            }
-          }
+          toggleInfoPanel,
+          setNodes,
+          setEdges,
+          children
         },
       };
 
@@ -98,15 +101,24 @@ const Home: React.FC = () => {
     [screenToFlowPosition]
   );
 
+  const toggleInfoPanel = (id: string) => {
+    if (selectedNode?.id === id) {
+      setInfoOpen(!infoOpen);
+    } else {
+      setInfoOpen(true);
+    }
+  };
+
   const selectNode = (e: React.MouseEvent, node: Node) => {
+    console.log(node)
     setSelectedNode(node);
   };
 
   const deleteNode = () => {
     if (selectedNode) {
-      setNodes((nds) => nds.filter((node) => node !== selectedNode));
+      setNodes((nds) => nds.filter((node) => node.id !== selectedNode.id && node.parentId !== selectedNode.id));
       setEdges((eds) => eds.filter((edge) => edge.source !== selectedNode.id && edge.target !== selectedNode.id));
-      setSelectedNode(null);
+      // setSelectedNode(null);
     }
   };
 
@@ -118,7 +130,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="flex h-full flex-grow">
-      <Menu selectedProvider={selectedProvider} setSelectedProvider={setSelectedProvider} deleteNode={deleteNode} clearNode={clearNode} />
+      <Menu selectedProvider={provider} setSelectedProvider={setProvider} deleteNode={deleteNode} clearNode={clearNode} />
       <div className="h-full flex-grow">
         <ReactFlow
           nodes={nodes}
@@ -140,7 +152,8 @@ const Home: React.FC = () => {
       </div>
       <div className="fixed top-0 right-0 m-4">
         <ConfigPanel terraformConfig="" />
-        <Card className={`relative mt-2 w-[350px] transition-transform duration-300 ${infoOpen ? 'translate-x-0' : 'translate-x-[200%]'}`}>
+        {/* InfoPanel - Too lazy to make a separate component :v */}
+        <Card className={`bg-card/10 backdrop-filter backdrop-blur-sm relative mt-2 w-[350px] transition-transform duration-300 ${infoOpen ? 'translate-x-0' : 'translate-x-[200%]'}`}>
           <CardHeader>
             <CardTitle className="text-xl">{String(selectedNode?.data.name)}</CardTitle>
             <XIcon className="absolute top-4 right-4 h-4 w-4 cursor-pointer" onClick={() => setInfoOpen(false)} />
@@ -148,6 +161,7 @@ const Home: React.FC = () => {
           <CardContent>
             <ReactMarkdown className="prose text-white" remarkPlugins={[gfm]} children={String(selectedNode?.data.info)} />
           </CardContent>
+          <BorderBeam size={300} duration={5} colorFrom="#0ea5e9" colorTo="#bae6fd" />
         </Card>
       </div>
     </div>
