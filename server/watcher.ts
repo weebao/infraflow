@@ -4,15 +4,21 @@ import chokidar from 'chokidar';
 
 // Configuration
 const WATCH_FOLDER = path.join(__dirname, 'watch'); // Folder to watch
+const OUTPUT_FOLDER = path.join(__dirname, 'output'); // Folder to store output files
 const FILE_EXTENSION = '.tf'; // Only process .tf files
 
 // Set to keep track of processed files
 const processedFiles = new Set<string>();
 
-// Ensure the watch folder exists
+// Ensure the watch and output folders exist
 if (!fs.existsSync(WATCH_FOLDER)) {
     fs.mkdirSync(WATCH_FOLDER, { recursive: true });
     console.log(`Created watch folder at ${WATCH_FOLDER}`);
+}
+
+if (!fs.existsSync(OUTPUT_FOLDER)) {
+    fs.mkdirSync(OUTPUT_FOLDER, { recursive: true });
+    console.log(`Created output folder at ${OUTPUT_FOLDER}`);
 }
 
 // Initialize watcher
@@ -25,6 +31,16 @@ const watcher = chokidar.watch(WATCH_FOLDER, {
         pollInterval: 100
     }
 });
+
+const defaultFiles = ['main.tf', 'variables.tf', 'output.tf'];
+
+    defaultFiles.forEach(async (file) => {
+        const filePath = path.join(OUTPUT_FOLDER, file);
+        if (!fs.existsSync(filePath)) {
+            await fs.promises.writeFile(filePath, '');
+            console.log(`Created default file: ${filePath}`);
+        }
+    });
 
 console.log(`Watching for new ${FILE_EXTENSION} files in ${WATCH_FOLDER}...`);
 
@@ -62,6 +78,7 @@ watcher.on('error', (error) => {
  */
 async function regenerateTargetFiles() {
     const groupedFiles: { [prefix: string]: string[] } = {};
+    // Ensure default files exist in the output folder
 
     // Group files by prefix (the part before the first underscore)
     processedFiles.forEach((filePath) => {
@@ -93,7 +110,7 @@ async function regenerateTargetFiles() {
             return aNum - bNum;
         });
 
-        const targetFilePath = path.join(__dirname, `${prefix}${FILE_EXTENSION}`);
+        const targetFilePath = path.join(OUTPUT_FOLDER, `${prefix}${FILE_EXTENSION}`);
 
         try {
             // Clear the target file

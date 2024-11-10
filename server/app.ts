@@ -4,10 +4,17 @@ import { Worker } from 'worker_threads';
 import path from 'path';
 const { exec } = require('child_process');
 import fs from 'fs';
+import cors from 'cors';
 
 const app = express();
 app.use(express.json({ limit: '10mb' })); 
 const PORT = 8000;
+
+app.use(cors({
+        origin: 'http://localhost:3000',
+        methods: ['GET', 'POST'],
+        allowedHeaders: ['Content-Type'],
+    }));
 
 // Singleton to manage the file watcher worker
 class FileWatcherWorker {
@@ -16,7 +23,6 @@ class FileWatcherWorker {
     private tempDir: string | null = null;
 
     private constructor() {}
-
     public static getInstance(): FileWatcherWorker {
         if (!FileWatcherWorker.instance) {
             FileWatcherWorker.instance = new FileWatcherWorker();
