@@ -10,6 +10,7 @@ type ServiceNodeData = Node<{
   info: string;
   isSuggestion: boolean;
   toggleInfoPanel: () => void;
+  args: any;
 }>;
 
 export function ServiceNode({ id, data, selected, parentId }: NodeProps<ServiceNodeData>) {

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ReactFlowProvider } from "@xyflow/react";
 import "./globals.css";
 import '@xyflow/react/dist/style.css';
+import { ModuleProvider } from "@/context/module-context";
 import { ProviderProvider } from "@/context/provider-context";
 
 export const metadata: Metadata = {
@@ -18,9 +19,11 @@ export default function RootLayout({
     <html lang="en">
       <body className="h-screen">
         <ReactFlowProvider>
-          <ProviderProvider>
-            {children}
-          </ProviderProvider>
+          <ModuleProvider>
+            <ProviderProvider>
+              {children}
+            </ProviderProvider>
+          </ModuleProvider>
         </ReactFlowProvider>
       </body>
     </html>

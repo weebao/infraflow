@@ -80,7 +80,7 @@ export function Menu({ selectedProvider, setSelectedProvider, deleteNode, clearN
                 key={tool.name}
                 draggable
                 onDragStart={(e) => handleDragStart(e, tool)}
-                className={`flex items-center justify-between rounded-md px-2 py-2 hover:bg-muted cursor-grab active:cursor-grabbing transition-all ${isDragging === tool.name ? "pl-4" : ""}`}
+                className={`flex items-center justify-between rounded-md px-2 py-2 hover:bg-muted cursor-grab active:cursor-grabbing transition-all ${isDragging === tool.name ? "pl-6" : ""}`}
                 onDragEnd={() => setIsDragging(null)}
               >
                 {tool.name}
